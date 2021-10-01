@@ -1,0 +1,98 @@
+/*! _app-demo-dark.scss | Friendkit | © Css Ninja. 2020-2021 */
+
+/* ==========================================================================
+Demo & elements Styles
+========================================================================== */
+
+/*
+    0. Elements Sidebar
+    1. Elements Wrap
+*/
+
+/* ==========================================================================
+0. Elements Sidebar
+========================================================================== */
+
+body {
+    &.is-dark {
+        .elements-sidebar {
+            background: darken($dark, 6%);
+            border-color: darken($dark, 6%);
+
+            .header {
+                border-color: lighten($dark, 4%);
+
+                h3 {
+                    color: $white-light;
+                }
+            }
+
+            .elements-list {
+                .element-menu {
+                    border-color: lighten($dark, 4%);
+
+                    .menu-trigger {
+                        &:hover, &.is-active {
+                            background: darken($dark, 3%);
+
+                            span {
+                                color: $white-light;
+                            }
+
+                            > svg {
+                                stroke: $white;
+                            }
+                        }
+
+                        span {
+                            color: $light-text;
+                        }
+                    }
+
+                    .submenu-wrap {
+                        ul li {
+                            a {
+                                color: $light-text;
+
+                                &.is-active {
+                                    color: $accent;
+                                }
+
+                                &:not(.is-active):hover {
+                                    color: $white-light;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ==========================================================================
+1. Elements Wrap
+========================================================================== */
+
+body {
+    &.is-dark {
+        .elements-wrap {
+            .element-block {
+                border-color: lighten($dark, 4%);
+                background: $dark;
+
+                h3 {
+                    color: $white-light;
+                }
+
+                p {
+                    color: $light-text;
+                }
+
+                code {
+                    background: $dark;
+                }
+            }
+        }
+    }
+}

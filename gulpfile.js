@@ -110,8 +110,11 @@ function compileJS() {
     'src/assets/js/pages/questions.js',
     'src/assets/js/pages/shop.js',
     'src/assets/js/pages/signup.js',
+    'src/assets/js/pages/login.js',
     'src/assets/js/pages/settings.js',
     'src/assets/js/pages/videos.js',
+    'src/assets/js/config.js',
+    'src/assets/js/amazon-cognito-identity.min.js',
   ])
     .pipe(babel())
     .pipe(uglify())

@@ -10,6 +10,24 @@ $(document).ready(function () {
 
     "use strict";
 
+    var poolData = {
+        UserPoolId: _config.cognito.userPoolId,
+        ClientId: _config.cognito.userPoolClientId
+    };
+    var userPool;
+    userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    if (typeof AWSCognito !== 'undefined') {
+        AWSCognito.config.region = _config.cognito.region;
+    }
+
+    var registerButton = $('#signup');
+
+    var submitButtonHandler = function (e, handlerEvent) {
+        console.log('clicked');
+        e.preventDefault();
+        handlerEvent();
+    }
+
     $('.progress-wrap .dot').on('click', function () {
         var $this = $(this);
         var stepValue = $this.attr('data-step');
@@ -176,13 +194,82 @@ $(document).ready(function () {
         });
     }
 
-    $('#signup-finish').on('click', function () {
-        var $this = $(this);
-        var url = '/navbar-v1-feed.html';
-        $this.addClass('is-loading');
-        setTimeout(function () {
-            window.location = url;
-        }, 800)
-    })
+    registerButton.on('click',function(e) {
+        submitButtonHandler(e, handleRegister);
+    });
+
+    function handleRegister() {
+        var userAttributes = [];
+        var firstname = $('#firstnameInputRegister').val();
+        if (!firstname.trim().length) {
+            return false;
+        }
+        var lastname = $('#lastnameInputRegister').val();
+        if (!lastname.trim().length) {
+            return false;
+        }
+        var email = $('#emailInputRegister').val();
+        email = email.toLowerCase();
+        var password = $('#passwordInputRegister').val();
+        // var confirmPassword = $('#confirmPasswordInputRegister').val();
+        // if(password !== confirmPassword){
+        //     alert('passwords do not match')
+        //     return
+        // }
+        
+        userAttributes.push(
+            new AmazonCognitoIdentity.CognitoUserAttribute({Name: 'name', Value: firstname+ ' ' + lastname}),
+            new AmazonCognitoIdentity.CognitoUserAttribute({Name: 'email', Value: email}), 
+        );
+        var onSuccess = function registerSuccess() {
+            localStorage.setItem("verificationEmail", email);
+            $('#firstnameInputRegister').val('');
+            $('#lastnameInputRegister').val('');
+            $('#emailInputRegister').val('');
+            $('#passwordInputRegister').val('');
+            toasts.service.success('', 'mdi mdi-progress-check', 'Registeration Successful, please login', 'bottomRight', 2500);
+            setTimeout(() => {
+                window.location.pathname = `/login.html`;
+            }, 2000);
+        };
+        var onFailure = function registerFailure(err) {
+            if (err.code === 'UserNotConfirmedException') {
+                window.location.pathname = `/verify.html`;
+            } else {
+                $('#confirmPasswordInputRegister').val('');
+                $('#passwordInputRegister').val('');
+                if (err.code === "InvalidParameterException") {
+                    toasts.service.error('', 'mdi mdi-progress-check', err.message, 'bottomRight', 2500);
+                } else {
+                    toasts.service.error('', 'mdi mdi-progress-check', err.message, 'bottomRight', 2500);
+                }
+            }
+        };
+        register(userAttributes, email, password, onSuccess, onFailure);
+    }
+
+    function register(userAttributes, email, password, onSuccess, onFailure) {
+        email = email.toLowerCase()
+        userPool.signUp(email, password, userAttributes, null,
+            function signUpCallback(err, result) {
+                if (!err) {
+                    onSuccess(result);
+                } else {
+                    onFailure(err);
+                }
+            }
+        );
+    }
+
+
+    // $('#signup-finish').on('click', function () {
+    //     console.log("hi");
+    //     var $this = $(this);
+    //     var url = '/navbar-v1-feed.html';
+    //     $this.addClass('is-loading');
+    //     setTimeout(function () {
+    //         window.location = url;
+    //     }, 800)
+    // })
 
 })

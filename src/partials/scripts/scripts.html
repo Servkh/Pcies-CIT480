@@ -5,6 +5,8 @@
 
 <!-- Core js -->
 <script src="{{ root }}assets/js/global.js"></script>
+<script src="{{ root }}assets/js/config.js"></script>
+<script src="{{ root }}assets/js/amazon-cognito-identity.min.js"></script>
 
 <!-- Navigation options js -->
 <script src="{{ root }}assets/js/navbar-v1.js"></script>
@@ -35,6 +37,9 @@
 <!-- Signup page js -->
 {{#ifpage 'signup'}}
 <script src="{{ root }}assets/js/signup.js"></script>
+{{/ifpage}}
+{{#ifpage 'login'}}
+<script src="{{ root }}assets/js/login.js"></script>
 {{/ifpage}}
 
 <!-- Feed pages js -->
